@@ -16,7 +16,7 @@ addon_version = addon.getAddonInfo('version')
 addon_path = xbmc.translatePath(addon.getAddonInfo('path'))
 bitrate = addon.getSetting('bitrate')
 icon = os.path.join(addon_path, 'icon.png')
-next = os.path.join(addon_path, 'resources','icons','next.png')
+next_icon = os.path.join(addon_path, 'resources','icons','next.png')
 fanart = os.path.join(addon_path, 'fanart.jpg')
 cache = StorageServer.StorageServer("nfl_com", 1)
 language = addon.getLocalizedString
@@ -152,7 +152,7 @@ def index(url, name):
             else:
                 page_url = url.split('?')[0]+page
                 mode = 1
-            add_dir(language(30003), page_url, mode, next)
+            add_dir(language(30003), page_url, mode, next_icon)
         except:
             pass
 
@@ -170,7 +170,7 @@ def get_page_3(url):
     batch = data['batch']
     if batch * 50 < data['total']:
         next_url = url.replace('batchNum=%s' %batch, 'batchNum=%s' %(batch + 1))
-        add_dir(language(30003), next_url, 5, next)
+        add_dir(language(30003), next_url, 5, next_icon)
 
 
 def get_current_featured_videos():
