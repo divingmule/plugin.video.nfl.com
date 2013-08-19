@@ -49,7 +49,7 @@ def make_request(url, data=None, headers=None):
         addon_log('We failed to open "%s".' %url)
         if hasattr(e, 'reason'):
             addon_log('We failed to reach a server.')
-            addon_log('Reason: ', e.reason)
+            addon_log('Reason: %s' %e.reason)
         if hasattr(e, 'code'):
             addon_log('We failed with error code - %s.' %e.code)
 
@@ -142,7 +142,7 @@ def index(url, name):
                 add_dir(name,link,3,thumb,duration,desc,False)
             except:
                 addon_log('add_dir exception: %s' %format_exc())
-        # check for pagenation  
+        # check for pagenation
         try:
             page = soup.find('div', attrs={'id' : "video-list-pagination"})('a')[-1]['href']
             # video pages switch to ajax after the first few pages
@@ -179,7 +179,7 @@ def get_current_featured_videos():
     playlist.clear()
     for i in videos:
         playlist.add(get_video_url(i[1]), xbmcgui.ListItem(i[0]))
-    play = xbmc.Player().play(playlist)
+    xbmc.executebuiltin('playlist.playoffset(video,0)')
 
 
 def cache_featured_videos():
@@ -209,7 +209,7 @@ def get_featured_videos(play=False):
         else:
             xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, listitem, False)
     if play:
-        play = xbmc.Player().play(playlist)
+        xbmc.executebuiltin('playlist.playoffset(video,0)')
     else:
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -234,7 +234,7 @@ def search():
             duration = i('p')[1].string
             add_dir(name, vid_id, 3, thumb, duration, desc, False)
         except:
-            pass
+            addon_log(format_exc())
 
 
 def get_video_url(url):
@@ -288,9 +288,13 @@ def select_bitrate(bitrate_list):
 
 
 def set_url(url):
+    success = True
     resolved_url = get_video_url(url)
+    if resolved_url is None:
+        success = False
+        resolved_url = ''
     item = xbmcgui.ListItem(path=resolved_url)
-    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), success, item)
 
 
 def get_duration_in_minutes(duration):
@@ -358,7 +362,6 @@ elif mode == 3:
 
 elif mode == 4:
     get_current_featured_videos()
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode == 5:
     get_page_3(params['url'])
