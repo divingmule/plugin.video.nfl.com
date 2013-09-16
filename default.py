@@ -232,7 +232,7 @@ def get_highlights(href=None, selected=None):
     for i in [nav.season, nav.season_type, nav.week, nav.team, nav.game]:
         if i:
             dir_name += '%s | ' %i
-    dir_name += '[/COLOR] Change Filters'
+    dir_name += '[/COLOR] %s' %language(30005)
     add_dir(dir_name, 'display_nav', 9, icon)
     get_highlight_videos(feed_url)
 
@@ -248,7 +248,7 @@ def get_highlight_videos(url):
         xbmcplugin.addDirectoryItem(int(sys.argv[1]), final_url, listitem, False)
     if data['total'] > data['offset'] + 16:
         page_url = url.split('offset=')[0] + 'offset=' + str(data['offset'] + 16)
-        add_dir('Next Page', page_url, 11, icon)
+        add_dir(language(30003), page_url, 11, icon)
 
 
 def display_highlights_nav(selected=None):
@@ -256,12 +256,12 @@ def display_highlights_nav(selected=None):
     nav = eval(cache.get('navigation'))
     if selected:
         addon_log('Selected: %s' %selected)
-        ret = dialog.select('Change Filters', [i['label'] for i in nav[selected]])
+        ret = dialog.select(language(30005), [i['label'] for i in nav[selected]])
         if ret > -1:
             addon_log('Selected URL: %s' %nav[selected][ret]['href'])
             get_highlights(nav[selected][ret]['href'], selected)
     else:
-        ret = dialog.select('Change Filters', [i.title() for i in nav.keys()])
+        ret = dialog.select(language(30005), [i.title() for i in nav.keys()])
         if ret > -1:
             addon_log('Selected: %s' %nav.keys()[ret])
             display_highlights_nav(nav.keys()[ret])
